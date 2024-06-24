@@ -6,6 +6,7 @@ import Loading from "./Loading";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import BottomNav from "../global/layout/BottomNav";
+import { useUser } from "../global/molecules/general/useUser";
 
 interface PageLayoutProps {
   children: React.ReactNode;
@@ -13,10 +14,9 @@ interface PageLayoutProps {
 // style={{ zoom: "80%" }}
 
 const PageLayout: React.FC<PageLayoutProps> = ({ children }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(localStorage.getItem("openPage") || false);
+  const user = useUser()
   const [width, setWidth] = useState(550);
-  const pathname = usePathname()
-  console.log("first", pathname)
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -32,6 +32,7 @@ const PageLayout: React.FC<PageLayoutProps> = ({ children }) => {
   }, []);
 
   const handleToggle = () => {
+    // localStorage.setItem("openPage", String(!isExpanded))
     setIsExpanded(!isExpanded);
   };
   // max-sm:hidden max-md:hidden
@@ -52,7 +53,7 @@ const PageLayout: React.FC<PageLayoutProps> = ({ children }) => {
               <section
                 style={{
                   height: `${
-                    width <= 550
+                    width <= 550 && !user?.isUserAdmin
                       ? "calc(100vh - 7rem)"
                       : "calc(100vh - 3.5rem)"
                   }`,
@@ -62,7 +63,7 @@ const PageLayout: React.FC<PageLayoutProps> = ({ children }) => {
                 {children}
               </section>
             </div>
-            {width <= 550 && (
+            {width <= 550 && !user?.isUserAdmin && (
               <BottomNav className="bg-white h-14 w-full border-t sticky bottom-0 shadow-md px-4"/>
             )}
           </div>

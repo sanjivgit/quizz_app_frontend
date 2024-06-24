@@ -1,7 +1,6 @@
 "use client";
 import React from "react";
 import Login from "./Login";
-import { GraphAnimation, RupeeAnimation } from "./LoginAnimation";
 
 const HeroLoginPage = () => {
   return (

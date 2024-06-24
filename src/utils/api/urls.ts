@@ -1,47 +1,64 @@
 /**
- * Author: Krish
+ * Author: Sanjiv
  * use: For API URLs
  * status: Open
  */
 
-type FinanceUrlKeys =
-  | "LEATEST_JOB" 
-  | "ADMIT_CARD"
-  | "RESULT";
+type QuizzUrlKeys =
+  | "AUTH"
+  | "TEST_URL"
+  | "TEST_PAPER_URL"
+  | "QUESTIONS_URL"
+  | "QUESTION_TYPE_URL";
 
 type Urls = {
-  [key in FinanceUrlKeys]: {
+  [key in QuizzUrlKeys]: {
     get?: string;
     create?: string;
     update?: string;
     getById?: string;
     delete?: string;
     createUpdateContent?: string;
+    register?: string;
+    login?: string;
+    sendOtp?: string;
+    getAll?: string;
+    upload?: string;
+    updateQuestion?: string;
+    updateOption?: string;
   };
 };
 
-export const FINANCE_URL: Urls = {
-  LEATEST_JOB: {
-    get: "/get-leatest-jobs",
-    create: "/create-leatest-job",
-    update: "/update-leatest-job",
-    getById: "/get-leatest-job",
-    createUpdateContent: "/create-leatest-job-update-content"
+export const QUIZZ_URL: Urls = {
+  AUTH: {
+    register : "/auth/register",
+    login: "/auth/login",
+    sendOtp:"/auth/phone/send-otp"
   },
-
-  ADMIT_CARD: {
-    get: "/get-admit-cards",
-    create: "/create-admit-card",
-    update: "/update-admit-card",
-    getById: "/get-admit-card",
-    createUpdateContent: "/create-admit-card-update-content"
+  TEST_URL:{
+    getAll: "test/get-all",
+    update: "test/update",
+    create: "test/create",
+    delete: "test/delete"
   },
-
-  RESULT: {
-    get: "/get-results",
-    create: "/create-result",
-    update: "/update-result",
-    getById: "/get-result",
-    createUpdateContent: "/create-result-update-content"
+  TEST_PAPER_URL:{
+    getAll: "test-paper/get-all",
+    update: "test-paper/update",
+    create: "test-paper/create",
+    delete: "test-paper/delete"
   },
+  QUESTIONS_URL:{
+    getAll: "/question/test-paper",
+    updateQuestion: "question/only/update",
+    updateOption: "question/option/update",
+    create: "question/create-single",
+    delete: "question/delete",
+    upload: "upload"
+  },
+  QUESTION_TYPE_URL:{
+    getAll: "question-type/get-all",
+    update: "question-type/update",
+    create: "question-type/create",
+    delete: "question-type/delete"
+  }
 };

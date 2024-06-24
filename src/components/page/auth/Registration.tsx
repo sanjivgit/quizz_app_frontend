@@ -4,8 +4,12 @@ import Button from "@/components/global/atoms/Button";
 import Input from "@/components/global/atoms/Input";
 import { Formik } from "formik";
 import * as Yup from "yup";
-import React, { useState } from "react";
-import axios from "axios";
+import React, { useEffect, useState } from "react";
+import axios from "@/lib/axiosConfig";
+import { QUIZZ_URL } from "@/utils/api/urls";
+import { useWorkingAnimation } from "@/components/global/molecules/general/useWorkingAnimation";
+import { useRouter } from "next/navigation";
+import toast, { Toaster } from "react-hot-toast";
 
 interface RegistrationInitialData {
   name: string;
@@ -20,19 +24,38 @@ interface OtpVerifyInitialData {
 
 const Registration = () => {
   const [errorMsg, setErrorMsg] = useState<string>();
-  const [state, setState] = useState({
+  const [workingAnimation, activateWorkingAnimation, hideWorkingAnimation] =
+    useWorkingAnimation();
+  const router = useRouter();
+  const [state, setState] = useState<any>({
     hide: true,
     confirmHide: true,
     isSentOtp: false,
+    registerData: {},
   });
 
-  const { hide, confirmHide, isSentOtp } = state;
+  const { hide, confirmHide, isSentOtp, registerData } = state;
 
   const RegistrationSchema = Yup.object().shape({
     name: Yup.string().required("Full name is required"),
-    phone: Yup.string().required("Phone number is required"),
+    phone: Yup.string().required("Phone number is required").max(10),
     password: Yup.string().required("Password is required"),
-    confirm_password: Yup.string().required("Confirm password is required"),
+    confirm_password: Yup.string()
+      .required("Confirm password is required")
+      .test("confirm_password", (value, validationContext) => {
+        const {
+          createError,
+          parent: { password },
+        } = validationContext;
+
+        if (password !== value) {
+          return createError({
+            message: "password didin't match",
+          });
+        }
+
+        return true;
+      }),
   });
 
   const OtpVerifySchema = Yup.object().shape({
@@ -42,52 +65,50 @@ const Registration = () => {
   ///////////////// Handling Registration Logics /////////////
 
   const handleRegistration = async (values: RegistrationInitialData) => {
+
     try {
-      // "https://jharkhandegovernance.com/auth/api/Registration",
-    //   const res = await axios.post("http://localhost:8000/api/Registration", {
-    //     name: values.name,
-    //     phone: values.phone,
-    //     password: values.password,
-    //   });
+      activateWorkingAnimation();
+      await axios({
+        url: `${QUIZZ_URL.AUTH.sendOtp}`,
+        method: "POST",
+        data: {
+          phone: values.phone,
+        },
+      });
 
-      // const res = await axios({
-      //   url: FINANCE_URL.AUTH_URL.Registration,
-      //   method: "POST",
-      //   data: {
-      //     email: values.user_id,
-      //     password: values.password,
-      //   },
-      // });
-
-      setState({...state, isSentOtp: true})
+      setState({ ...state, isSentOtp: true, registerData: values });
     } catch (error) {
       setErrorMsg("Something Went Wrong!!");
       console.log(error);
+    } finally {
+      hideWorkingAnimation();
     }
   };
 
   ///////////////// Handling OtpVerify Logics /////////////
 
   const handleOtpVerify = async (values: OtpVerifyInitialData) => {
+    
     try {
-      // "https://jharkhandegovernance.com/auth/api/OtpVerify",
-      const res = await axios.post("http://localhost:8000/api/OtpVerify", {
-        otp: values.otp,
+      activateWorkingAnimation();
+      const res = await axios({
+        url: `${QUIZZ_URL.AUTH.register}`,
+        method: "POST",
+        data: {
+          phone: registerData.phone,
+          full_name: registerData.name,
+          password: registerData.password,
+          otp: values.otp,
+        },
       });
 
-      // const res = await axios({
-      //   url: FINANCE_URL.AUTH_URL.OtpVerify,
-      //   method: "POST",
-      //   data: {
-      //     email: values.user_id,
-      //     password: values.password,
-      //   },
-      // });
-
-      window.location.replace("/quizz/login");
-    } catch (error) {
+      router.push("/auth/login");
+    } catch (error:any) {
+      toast.error("Something went wrong")
       setErrorMsg("Something Went Wrong!!");
       console.log(error);
+    } finally {
+      hideWorkingAnimation();
     }
   };
 
@@ -99,8 +120,45 @@ const Registration = () => {
     setState({ ...state, confirmHide: !confirmHide });
   };
 
+  ////////
+  const [timer, setTimer] = useState({
+    sec: 59,
+    min: 1,
+  });
+  const { sec, min } = timer;
+
+  useEffect(() => {
+    (function () {
+      setTimeout(() => {
+        if (sec === 0 && min > 0) {
+          setTimer({ ...timer, min: min - 1, sec: 59 });
+        } else if (sec > 0) {
+          setTimer({ ...timer, sec: sec - 1 });
+        }
+      }, 1000);
+    })();
+  }, [sec]);
+
+  ///////// Handle Re-Send Otp ////
+  const handleResend = async () => {
+    try {
+      await axios({
+        url: `${QUIZZ_URL.AUTH.sendOtp}`,
+        method: "POST",
+        data: {
+          phone: registerData.phone,
+        },
+      });
+      setTimer({ ...timer, sec: 59, min: 1 });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <>
+    <Toaster />
+      {workingAnimation}
       <div className="h-screen md:py-12 bg-gray-100 darks:bg-gray-900 darks:bg-opacity-40 flex items-center justify-center">
         <div className="md:w-1/2">
           <div className="max-w-full w-full px-2 sm:px-12 lg:pr-20 mb-12 lg:mb-0">
@@ -162,6 +220,7 @@ const Registration = () => {
                               error={errors.phone}
                               touched={touched.phone}
                               name="phone"
+                              type="number"
                             />
                           </div>
                           <div className="mt-1 mb-4">
@@ -318,7 +377,7 @@ const Registration = () => {
                       <span
                         className="text-gray-700 text-sm font-semibold cursor-pointer w-full text-center"
                         onClick={() => {
-                          // setmobileCardStatus(true)
+                          router.push("/auth/login");
                         }}
                       >
                         Already have an account? Login
@@ -366,8 +425,23 @@ const Registration = () => {
                             value={values.otp}
                             error={errors.otp}
                             touched={touched.otp}
-                            name="name"
+                            name="otp"
+                            maxlength={5}
                           />
+                          <div
+                            onClick={handleResend}
+                            className={`mt-1 ${
+                              min === 0 && sec === 0
+                                ? "cursor-pointer text-primary_bg"
+                                : "cursor-not-allowed"
+                            }`}
+                          >
+                            <span>Didn't get? Resend &nbsp;</span>
+                            <span>
+                              {String(min).padStart(2, "0")}:
+                              {String(sec).padStart(2, "0")}
+                            </span>
+                          </div>
                         </div>
 
                         <div className="grid mt-6">

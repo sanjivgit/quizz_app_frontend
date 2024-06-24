@@ -1,4 +1,4 @@
-import React, { ReactNode } from "react";
+import React, { ChangeEvent, ReactNode } from "react";
 
 /**
  * | Author- Sanjiv Kumar
@@ -22,10 +22,13 @@ interface InputProps {
   required?: boolean | false;
   icon?: ReactNode;
   iconAlign?: "left" | "right";
+  maxlength?: number;
+  labelColor?: string;
 }
 
 const Input: React.FC<InputProps> = (props) => {
   const fieldId = "id_" + props.name;
+  const {labelColor = "secondary"} = props;
 
   ///// If the Input type will be number then MouseWheeler will be disabled ////////////
   const handleFocus = (e: any) => {
@@ -36,26 +39,44 @@ const Input: React.FC<InputProps> = (props) => {
     }
   };
 
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    if (!props.readonly && props.onChange) {
+      if((props?.maxlength && String(e.target.value).length <= props?.maxlength) || !props?.maxlength)
+      props.onChange(e);
+    }
+  };
+
+
+  // ////// Handle OnInput 
+  // const handleOnInput = (e: ChangeEvent<HTMLInputElement>) => {
+  //   if(props?.maxlength){
+  //     e.target.value = Math.max(0, parseInt(e.target.value))
+  //     .toString()
+  //     .slice(0, props?.maxlength);
+  //   }
+  // }
+
   return (
     <>
-      <div className="flex flex-col gap-1">
-        <label className="text-secondary text-sm" htmlFor={fieldId}>
+      <div className={`flex flex-col gap-1`}>
+        <label className={`text-${labelColor} text-sm`} htmlFor={fieldId}>
           {props.label}
-          {props.required ? <span className="text-red-600 pl-2">*</span> : ""}
+          {props.required ? <span className="text-red-600 ">*</span> : ""}
         </label>
         <div
-          className={`flex items-center justify-between rounded border bg-transparent border-zinc-400 focus-within:outline focus-within:outline-black focus-within:border-none ${props.icon && props.iconAlign === "left" && "flex-row-reverse"}`}
+          className={`flex items-center justify-between rounded border shadow-lg bg-transparent border-zinc-400 focus-within:outline focus-within:outline-black focus-within:border-none ${props.icon && props.iconAlign === "left" && "flex-row-reverse"} ${props.readonly ? `bg-gray-300` : ""}`}
         >
           <input
             disabled={props.readonly}
-            required={props.required}
+            // required={props.required}
             placeholder={props.placeholder}
-            onChange={props.onChange}
+            onChange={handleChange}
             onBlur={props.onBlur}
             onFocus={handleFocus}
             type={props.type}
             value={props?.value}
-            className={`text-primary h-[40px] p-3 bg-transparent outline-none  w-full`}
+            // onInput={handleOnInput}
+            className={`text-primary h-[40px] p-3 rounded outline-none  w-full ${props.readonly ? 'cursor-not-allowed bg-[#f0f0f0]' : 'bg-white '}`}
             name={props.name}
             id={fieldId}
           />

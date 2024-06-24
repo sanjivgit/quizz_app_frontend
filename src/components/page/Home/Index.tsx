@@ -5,7 +5,7 @@ import Link from "next/link";
 import React from "react";
 import axios from "@/lib/axiosConfig";
 import { useQuery } from "react-query";
-import { FINANCE_URL } from "@/utils/api/urls";
+import { QUIZZ_URL } from "@/utils/api/urls";
 import Loader from "@/components/global/atoms/Loader";
 import LoaderSkeleton from "@/components/global/atoms/LoaderSkeleton";
 
@@ -31,17 +31,17 @@ const HeroHome = () => {
 
   ///// Getting Leated Job list
   const { isFetching: isLtJobFetching, data: leateatJobs = [] } = useForApiCall(
-    `${FINANCE_URL.LEATEST_JOB.get}`
+    `${QUIZZ_URL.AUTH.get}`
   );
 
   ///// Getting Admit Card list
   const { isFetching: isAtCardFetching, data: admitCards = [] } = useForApiCall(
-    `${FINANCE_URL.ADMIT_CARD.get}`
+    `${QUIZZ_URL.AUTH.get}`
   );
 
   ///// Getting Result list
   const { isFetching: isRltFetching, data: results = [] } = useForApiCall(
-    `${FINANCE_URL.RESULT.get}`
+    `${QUIZZ_URL.AUTH.get}`
   );
 
   return (

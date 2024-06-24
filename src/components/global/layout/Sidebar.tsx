@@ -5,10 +5,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { sidebarLinks } from "@/json/sidebar.json";
 import { usePathname, useRouter } from "next/navigation";
-import { useSelector } from "react-redux";
-import defaultProfilePic from "@/assets/icons/profile2.png";
+import { useDispatch, useSelector } from "react-redux";
 import profilePic from "@/assets/icons/profile2.png";
 import Button from "../atoms/Button";
+import { logout } from "@/redux/reducers/authReducer";
+import { ROLES } from "@/utils/userRoles/user";
 
 interface SideBarProps extends React.HTMLAttributes<HTMLDivElement> {
   className: string;
@@ -18,13 +19,14 @@ const Sidebar: React.FC<SideBarProps> = (props) => {
   const pathName = usePathname();
   const router = useRouter();
   const [data, setData] = useState<string | null>();
-  const userData = useSelector((state: any) => state.user.user?.userDetails);
+  const userData = useSelector((state: any) => state.user.user);
+  const dispatch = useDispatch();
   const [user, setUser] = useState<any>();
 
   useEffect(() => {
     setData(localStorage.getItem("openPage"));
     setUser(userData);
-  }, []);
+  }, [userData]);
   const handleClick = (moduleName: string) => {
     localStorage.setItem("openPage", moduleName);
   };
@@ -33,89 +35,106 @@ const Sidebar: React.FC<SideBarProps> = (props) => {
     router.push(url);
   };
 
+  const handleLogOut = () => {
+    dispatch(logout());
+    router.push("/auth/login");
+  };
+
   return (
     <div style={{ height: "calc(100vh - 3.5rem)" }} {...props}>
       <div className="flex flex-col items-center justify-center mt-3">
         <Image src={profilePic} height={100} width={100} alt="profile-pic" />
-        <h1 className="text-primary font-bold">Hiii, sanjiv</h1>
+        <h1 className="text-primary font-bold">Hiii, {user?.name.split(" ")[0]}</h1>
       </div>
       <section className="mt-3">
         {sidebarLinks.modules?.map((link, index: number) => {
-          return (
-            <div key={index}>
-              <ul className="mb-3 p-0">
-                {link.subModules ? (
-                  <li>
-                    <details open={data === link?.moduleName} className="mr-3">
-                      <summary
+          if (
+            !link.roles ||
+            (link.roles &&
+              (!user?.is_admin
+                ? link.roles.includes(ROLES.ALL)
+                : link.roles.includes(ROLES.ADMIN)))
+          )
+            return (
+              <div key={index}>
+                <ul className="mb-3 p-0">
+                  {link.subModules ? (
+                    <li>
+                      <details
+                        open={data === link?.moduleName}
+                        className="mr-3"
+                      >
+                        <summary
+                          className={`${
+                            pathName.startsWith(link.path)
+                              ? " bg-primary_bg"
+                              : " bg-transparent text-zinc-600"
+                          } whitespace-nowrap flex items-center ml-2 text-[0.9375rem] p-1 pr-4 hover:bg-primary_bg hover:text-white font-semibold text-white`}
+                        >
+                          <i className="w-8 mr-2 rounded-md p-1.5 bg-primary_bg ">
+                            {link.icon}
+                          </i>
+                          {link.moduleName}
+                        </summary>
+                        <ul>
+                          {link.subModules?.map((sub: any, i: number) => {
+                            if (
+                              !sub.roles ||
+                              (sub.roles &&
+                                (!user?.is_admin
+                                  ? sub.roles.includes("ALL")
+                                  : sub.roles.includes("ADMIN")))
+                            )
+                              return (
+                                <li
+                                  onClick={() => handleClick(sub.moduleName)}
+                                  key={i}
+                                  className={`mt-3 ml-5`}
+                                >
+                                  <Link
+                                    className={`text-[0.9375rem] p-2 ${
+                                      pathName === link.path
+                                        ? "text-black font-medium bg-primary_bg bg-opacity-20"
+                                        : "text-primary"
+                                    } `}
+                                    href={link.path}
+                                  >
+                                    {link.moduleName}
+                                  </Link>
+                                </li>
+                              );
+
+                            return <></>;
+                          })}
+                        </ul>
+                      </details>
+                    </li>
+                  ) : (
+                    <Link href={link.path}>
+                      <h2
                         className={`${
                           pathName.startsWith(link.path)
                             ? " bg-primary_bg"
                             : " bg-transparent text-zinc-600"
-                        } whitespace-nowrap flex items-center ml-2 text-[0.9375rem] p-1 pr-4 hover:bg-primary_bg hover:text-white font-semibold text-white`}
+                        } whitespace-nowrap ml-2 mr-2 text-[0.9375rem] flex items-center p-1 pr-4 hover:bg-primary_bg hover:text-white font-semibold text-white`}
                       >
-                        <i className="w-8 mr-2 rounded-md p-1.5 bg-primary_bg ">
+                        <i className="w-8 mr-2 rounded-md p-1.5 bg-primary_bg">
                           {link.icon}
                         </i>
                         {link.moduleName}
-                      </summary>
-                      <ul>
-                        {link.subModules?.map((sub: any, i: number) => {
-                          if (
-                            !sub.roles ||
-                            (sub.roles &&
-                              user?.role.every((i: string) =>
-                                sub.roles.includes(i)
-                              ))
-                          )
-                            return (
-                              <li
-                                onClick={() => handleClick(sub.moduleName)}
-                                key={i}
-                                className={`mt-3 ml-5`}
-                              >
-                                <Link
-                                  className={`text-[0.9375rem] p-2 ${
-                                    pathName === link.path
-                                      ? "text-black font-medium bg-primary_bg bg-opacity-20"
-                                      : "text-primary"
-                                  } `}
-                                  href={link.path}
-                                >
-                                  {link.moduleName}
-                                </Link>
-                              </li>
-                            );
+                      </h2>
+                    </Link>
+                  )}
+                </ul>
+              </div>
+            );
 
-                          return <></>;
-                        })}
-                      </ul>
-                    </details>
-                  </li>
-                ) : (
-                  <Link href={link.path}>
-                    <h2
-                      className={`${
-                        pathName.startsWith(link.path)
-                          ? " bg-primary_bg"
-                          : " bg-transparent text-zinc-600"
-                      } whitespace-nowrap ml-2 mr-2 text-[0.9375rem] flex items-center p-1 pr-4 hover:bg-primary_bg hover:text-white font-semibold text-white`}
-                    >
-                      <i className="w-8 mr-2 rounded-md p-1.5 bg-primary_bg">
-                        {link.icon}
-                      </i>
-                      {link.moduleName}
-                    </h2>
-                  </Link>
-                )}
-              </ul>
-            </div>
-          );
+          return <></>;
         })}
       </section>
       <hr className="border-1" />
-      <Button className="mt-3 ml-3" variant={"primary"}>
-        Loug Out{" "}
+      <Button onClick={handleLogOut} className="mt-3 ml-3" variant={"primary"}>
+        Log Out
         <span>
           <svg
             xmlns="http://www.w3.org/2000/svg"

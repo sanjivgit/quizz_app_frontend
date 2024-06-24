@@ -7,10 +7,14 @@ import * as Yup from "yup";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { login } from "@/redux/reducers/authReducer";
-import axios from "axios";
+import axios from "@/lib/axiosConfig";
+import { QUIZZ_URL } from "@/utils/api/urls";
+import { useWorkingAnimation } from "@/components/global/molecules/general/useWorkingAnimation";
+import { useRouter } from "next/navigation";
+import toast, { Toaster } from "react-hot-toast";
 
 interface LoginInitialData {
-  user_id: string;
+  phone: string;
   password: string;
 }
 
@@ -18,41 +22,39 @@ const Login = () => {
   const dispatch = useDispatch();
   const [errorMsg, setErrorMsg] = useState<string>();
   const [hide, setHide] = useState(true);
+  const router = useRouter();
+  const [workingAnimation, activateWorkingAnimation, hideWorkingAnimation] =
+    useWorkingAnimation();
 
   const LoginSchema = Yup.object().shape({
-    user_id: Yup.string().required("User Id is required"),
+    phone: Yup.string().required("Phone number is required"),
     password: Yup.string().required("Password is required"),
   });
 
   ///////////////// Handling Login Logics /////////////
 
   const handleLogin = async (values: LoginInitialData) => {
+    activateWorkingAnimation();
     try {
-      // "https://jharkhandegovernance.com/auth/api/login",
-      const res = await axios.post(
-        "http://localhost:8000/api/login",
-        {
-          email: values.user_id,
+      const res = await axios({
+        url: QUIZZ_URL.AUTH.login,
+        method: "POST",
+        data: {
+          phone: values.phone,
           password: values.password,
-        }
-      );
-
-      // const res = await axios({
-      //   url: FINANCE_URL.AUTH_URL.login,
-      //   method: "POST",
-      //   data: {
-      //     email: values.user_id,
-      //     password: values.password,
-      //   },
-      // });
+        },
+      });
 
       res.data.data
         ? (dispatch(login(res.data.data)),
-          window.location.replace("/finance/home"))
+          window.location.replace("/quizz/home"))
         : setErrorMsg("You have entered wrong credentials !!");
-    } catch (error) {
+    } catch (error: any) {
+      toast.error(error.response.data.message);
       setErrorMsg("Something Went Wrong!!");
       console.log(error);
+    } finally {
+      hideWorkingAnimation();
     }
   };
 
@@ -62,12 +64,14 @@ const Login = () => {
 
   return (
     <>
+      <Toaster />
+      {workingAnimation}
       <div className="max-w-full w-full px-2 sm:px-12 lg:pr-20 mb-12 lg:mb-0">
         <div className="relative">
           <div className="p-6 sm:py-8 sm:px-12 rounded-lg bg-white darks:bg-gray-800 shadow-xl">
             <Formik
               initialValues={{
-                user_id: "",
+                phone: "",
                 password: "",
               }}
               validationSchema={LoginSchema}
@@ -100,10 +104,12 @@ const Login = () => {
                         placeholder="Username"
                         onChange={handleChange}
                         onBlur={handleBlur}
-                        value={values.user_id}
-                        error={errors.user_id}
-                        touched={touched.user_id}
-                        name="user_id"
+                        value={values.phone}
+                        error={errors.phone}
+                        touched={touched.phone}
+                        name="phone"
+                        maxlength={10}
+                        type="number"
                       />
                     </div>
                     <Input
@@ -196,6 +202,14 @@ const Login = () => {
             </Formik>
             <div className="my-2">
               <div className="flex flex-col items-center justify-center flex-wrap gapx-x-2 gap-y-2 w-full poppins">
+                <span
+                  className="text-gray-700 text-sm font-semibold cursor-pointer w-full text-center"
+                  onClick={() => {
+                    router.push("/auth/register");
+                  }}
+                >
+                  Don't have an account? Sign up
+                </span>
                 <span
                   className="text-gray-700 text-sm font-semibold cursor-pointer w-full text-center"
                   onClick={() => {

@@ -2,13 +2,18 @@
 const nextConfig = {
   basePath: "/quizz",
   env: {
-    backend: "http://localhost:8000",
+    backend: "http://localhost:2001/api/v1",
   },
   async redirects() {
     return [
       {
         source: "/",
-        destination: "/home",
+        destination: "/quizz/home",
+        permanent: true,
+      },
+      {
+        source: "/quizz",
+        destination: "/quizz/home",
         permanent: true,
       },
     ];

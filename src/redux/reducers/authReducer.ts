@@ -1,10 +1,10 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import Cookies from "js-cookie";
 
-const govJobsLoginData = Cookies.get("govJobsLoginData");
+const quizzLoginData = Cookies.get("quizzLoginData");
 
 const initialState = {
-  user: govJobsLoginData ? JSON.parse(govJobsLoginData) : null,
+  user: quizzLoginData ? JSON.parse(quizzLoginData) : null,
 };
 
 const authSlice = createSlice({
@@ -13,11 +13,11 @@ const authSlice = createSlice({
   reducers: {
     login: (state, action: PayloadAction<any>) => {
       state.user = action.payload;
-      Cookies.set("govJobsLoginData", JSON.stringify(action.payload), { expires: 1 });
+      Cookies.set("quizzLoginData", JSON.stringify(action.payload), { expires: 1 });
     },
     logout: (state) => {
       state.user = null;
-      Cookies.remove("govJobsLoginData");
+      Cookies.remove("quizzLoginData");
     },
   },
 });

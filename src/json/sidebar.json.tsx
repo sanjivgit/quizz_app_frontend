@@ -3,6 +3,7 @@ import Image from "next/image";
 import { SidebarLinksProps } from "@/utils/types/types";
 import mastersLogo from "@/assets/icons/sidebar/masters.svg";
 import houseIcons from "@/assets/svg/house_icons.svg"
+import { ROLES } from "@/utils/userRoles/user";
 
 export const sidebarLinks: SidebarLinksProps = {
   modules: [
@@ -17,6 +18,59 @@ export const sidebarLinks: SidebarLinksProps = {
         />
       ),
       path: "/home",
+      roles:[ROLES.ALL]
+    },
+    {
+      moduleName: "Home",
+      icon: (
+        <Image
+          src={houseIcons}
+          alt="home"
+          width={25}
+          height={25}
+        />
+      ),
+      path: "/admin/home",
+      roles:[ROLES.ADMIN]
+    },
+    {
+      moduleName: "All Tests",
+      icon: (
+        <Image
+          src={houseIcons}
+          alt="home"
+          width={25}
+          height={25}
+        />
+      ),
+      path: "/admin/all-tests",
+      roles:[ROLES.ADMIN]
+    },
+    {
+      moduleName: "Question Types",
+      icon: (
+        <Image
+          src={houseIcons}
+          alt="home"
+          width={25}
+          height={25}
+        />
+      ),
+      path: "/admin/question-types",
+      roles:[ROLES.ADMIN]
+    },
+    {
+      moduleName: "Existing Users",
+      icon: (
+        <Image
+          src={houseIcons}
+          alt="home"
+          width={25}
+          height={25}
+        />
+      ),
+      path: "/admin/users",
+      roles:[ROLES.ADMIN]
     },
     {
       moduleName: "My Purchased",
@@ -29,6 +83,7 @@ export const sidebarLinks: SidebarLinksProps = {
         />
       ),
       path: "/my-purchased",
+      roles:[ROLES.ALL]
       // subModules: [
       //   {
       //     moduleName: "Receipt Register",
@@ -47,6 +102,7 @@ export const sidebarLinks: SidebarLinksProps = {
         />
       ),
       path: "/all-sets",
+      roles:[]
     },
     {
       moduleName: "Settings",
@@ -58,7 +114,8 @@ export const sidebarLinks: SidebarLinksProps = {
           height={25}
         />
       ),
-      path: "/settings"
+      path: "/settings",
+      roles:[]
     },
   ],
 };
