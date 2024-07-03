@@ -1,0 +1,7 @@
+{
+  "/admin/home/page": "app/admin/home/page.js",
+  "/auth/login/page": "app/auth/login/page.js",
+  "/admin/all-tests/page": "app/admin/all-tests/page.js",
+  "/admin/all-tests/sub-test-papers/[id]/page": "app/admin/all-tests/sub-test-papers/[id]/page.js",
+  "/favicon.ico/route": "app/favicon.ico/route.js"
+}

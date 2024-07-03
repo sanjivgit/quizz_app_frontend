@@ -33,6 +33,7 @@ export default function HeroTestPapersTable(props: HeroTestPapersTableProps) {
     const updatedData = { ...data };
     delete updatedData.total_question;
     updatedData.test_id = testId;
+    delete updatedData?.is_paid;
     updatedData.active =
       data.active === "true" ? true : data.active === "false" && false;
     updatedData.is_free =

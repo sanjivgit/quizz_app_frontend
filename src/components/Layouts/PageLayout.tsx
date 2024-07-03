@@ -53,7 +53,7 @@ const PageLayout: React.FC<PageLayoutProps> = ({ children }) => {
               <section
                 style={{
                   height: `${
-                    width <= 550 && !user?.isUserAdmin
+                    width <= 550
                       ? "calc(100vh - 7rem)"
                       : "calc(100vh - 3.5rem)"
                   }`,
@@ -63,7 +63,7 @@ const PageLayout: React.FC<PageLayoutProps> = ({ children }) => {
                 {children}
               </section>
             </div>
-            {width <= 550 && !user?.isUserAdmin && (
+            {width <= 550 && (
               <BottomNav className="bg-white h-14 w-full border-t sticky bottom-0 shadow-md px-4"/>
             )}
           </div>
@@ -74,3 +74,5 @@ const PageLayout: React.FC<PageLayoutProps> = ({ children }) => {
 };
 
 export default PageLayout;
+
+// !user?.isUserAdmin &&

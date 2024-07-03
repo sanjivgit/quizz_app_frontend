@@ -1,0 +1,32 @@
+{
+  "pages": {
+    "/layout": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/layout.css",
+      "static/chunks/app/layout.js"
+    ],
+    "/auth/login/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/auth/login/page.js"
+    ],
+    "/admin/home/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/admin/home/page.js"
+    ],
+    "/admin/all-tests/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/admin/all-tests/page.css",
+      "static/chunks/app/admin/all-tests/page.js"
+    ],
+    "/admin/all-tests/sub-test-papers/[id]/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/admin/all-tests/sub-test-papers/[id]/page.css",
+      "static/chunks/app/admin/all-tests/sub-test-papers/[id]/page.js"
+    ]
+  }
+}
