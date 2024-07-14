@@ -3,10 +3,9 @@ import React, { Suspense, useEffect, useState } from "react";
 import Header from "../global/layout/Header";
 import Sidebar from "../global/layout/Sidebar";
 import Loading from "./Loading";
-import Image from "next/image";
-import { usePathname } from "next/navigation";
-import BottomNav from "../global/layout/BottomNav";
+const BottomNav = dynamic(() => import("../global/layout/BottomNav"), { ssr: false });
 import { useUser } from "../global/molecules/general/useUser";
+import dynamic from "next/dynamic";
 
 interface PageLayoutProps {
   children: React.ReactNode;
@@ -14,7 +13,7 @@ interface PageLayoutProps {
 // style={{ zoom: "80%" }}
 
 const PageLayout: React.FC<PageLayoutProps> = ({ children }) => {
-  const [isExpanded, setIsExpanded] = useState(localStorage.getItem("openPage") || false);
+  const [isExpanded, setIsExpanded] = useState(false);
   const user = useUser()
   const [width, setWidth] = useState(550);
 

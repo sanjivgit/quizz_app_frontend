@@ -4,6 +4,7 @@ const nextConfig = {
   env: {
     backend: "http://localhost:2001/api/v1",
   },
+  distDir: "build",
   async redirects() {
     return [
       {

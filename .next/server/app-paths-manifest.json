@@ -1,7 +1,19 @@
 {
-  "/admin/home/page": "app/admin/home/page.js",
-  "/auth/login/page": "app/auth/login/page.js",
+  "/_not-found": "app/_not-found.js",
   "/admin/all-tests/page": "app/admin/all-tests/page.js",
   "/admin/all-tests/sub-test-papers/[id]/page": "app/admin/all-tests/sub-test-papers/[id]/page.js",
-  "/favicon.ico/route": "app/favicon.ico/route.js"
+  "/admin/all-tests/sub-test-papers/questions/[id]/page": "app/admin/all-tests/sub-test-papers/questions/[id]/page.js",
+  "/admin/home/page": "app/admin/home/page.js",
+  "/admin/users/page": "app/admin/users/page.js",
+  "/admin/question-types/page": "app/admin/question-types/page.js",
+  "/all-sets/page": "app/all-sets/page.js",
+  "/auth/login/page": "app/auth/login/page.js",
+  "/auth/register/page": "app/auth/register/page.js",
+  "/auth/verify/page": "app/auth/verify/page.js",
+  "/favicon.ico/route": "app/favicon.ico/route.js",
+  "/home/page": "app/home/page.js",
+  "/instruction/page": "app/instruction/page.js",
+  "/instruction/term-condition/page": "app/instruction/term-condition/page.js",
+  "/questions/page": "app/questions/page.js",
+  "/my-purchased/page": "app/my-purchased/page.js"
 }

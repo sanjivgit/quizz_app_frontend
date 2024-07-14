@@ -1,13 +1,10 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { BottomNavLinks } from "@/json/bottomNav.json";
 import { usePathname, useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
-import profilePic from "@/assets/icons/profile2.png";
-import Button from "../atoms/Button";
 
 interface BottomNavProps extends React.HTMLAttributes<HTMLDivElement> {
   className: string;

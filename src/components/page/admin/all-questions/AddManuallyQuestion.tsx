@@ -120,7 +120,7 @@ const AddManuallyQuestion: React.FC<AddManuallyQuestionTypes> = (props) => {
           handleReset,
           handleSubmit,
           dirty,
-        }) => (
+        }:any) => (
           <form onSubmit={handleSubmit}>
             <div className="">
               <div className="grid grid-cols-2 gap-6">
@@ -211,7 +211,7 @@ const AddManuallyQuestion: React.FC<AddManuallyQuestionTypes> = (props) => {
               </div>
               <hr className="my-4" />
               <div>
-                {values.options.map((option, index: number) => (
+                {values.options.map((option:any, index: number) => (
                   <div className="flex gap-2 mb-2" key={index}>
                     <div className="w-14">
                       <Input

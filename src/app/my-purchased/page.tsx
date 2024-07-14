@@ -1,3 +1,4 @@
+'use client'
 import PageLayout from '@/components/Layouts/PageLayout'
 import MyPurchasedHero from '@/components/page/myPurchased/Index'
 import React from 'react'
