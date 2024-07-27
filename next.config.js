@@ -2,7 +2,7 @@
 const nextConfig = {
   basePath: "/quizz",
   env: {
-    backend: "http://localhost:2001/api/v1",
+    backend: "https://testbook.tigga.in/api/v1",
   },
   distDir: "build",
   async redirects() {
